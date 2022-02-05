@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var jsObject = DefaultEngine.Object.Construct(Jint.Runtime.Arguments.Empty);
                 foreach (var pair in idict)
                 {
-                    jsObject.Put(pair.Key, ConvertObjectToJsValue(pair.Value), true);
+                    jsObject.Set(pair.Key, ConvertObjectToJsValue(pair.Value), true);
                 }
                 return jsObject;
             }

@@ -27,9 +27,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         internal string IntermediateFolder { get; set; }
         private IMarkdownService MarkdownService { get; set; }
 
-        public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
+        public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService, TemplateProcessor proc = null)
         {
-            var hostServiceCreator = new HostServiceCreator(null);
+            var cx = new DocumentBuildContext(parameters.OutputBaseDir);
+            var hostServiceCreator = new HostServiceCreator(cx);
             var hostService = hostServiceCreator.CreateHostService(
                 parameters,
                 null,
@@ -41,8 +42,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Handlers =
                     {
-                        new CompilePhaseHandler(null),
-                        new LinkPhaseHandler(null, null),
+                        new CompilePhaseHandler(cx),
+                        new LinkPhaseHandler(cx, null),
                     }
             };
             phaseProcessor.Process(new List<HostService> { hostService }, parameters.MaxParallelism);
@@ -80,7 +81,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerPhaseScope(PhaseName, LogLevel.Verbose))
             {
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
-                Directory.CreateDirectory(parameters.OutputBaseDir);
 
                 var context = new DocumentBuildContext(parameters);
 
@@ -181,7 +181,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             TemplateProcessor templateProcessor,
             IHostServiceCreator creator)
         {
-            var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+            var files = (from file in parameters.Files.EnumerateFiles()
                          from p in (from processor in processors
                                     let priority = processor.GetProcessingPriority(file)
                                     where priority != ProcessingPriority.NotSupported
@@ -207,8 +207,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             try
             {
-                return (from processor in processors.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
-                        join item in toHandleItems.AsParallel() on processor equals item.Key into g
+                return (from processor in processors
+                        join item in toHandleItems on processor equals item.Key into g
                         from item in g.DefaultIfEmpty()
                         where item != null && item.Any(s => s.Type != DocumentType.Overwrite) // when normal file exists then processing is needed
                         select LoggerPhaseScope.WithScope(

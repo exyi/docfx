@@ -24,12 +24,12 @@ namespace Microsoft.DocAsCode.YamlSerialization
     using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
 
     /// <summary>
-    /// A façade for the YAML library with the standard configuration.
+    /// A faï¿½ade for the YAML library with the standard configuration.
     /// </summary>
     public sealed class YamlDeserializer
     {
-        private static Dictionary<string, Type> PredefinedTagMappings { get; } =
-            new Dictionary<string, Type>
+        private static Dictionary<TagName, Type> PredefinedTagMappings { get; } =
+            new Dictionary<TagName, Type>
             {
                 { "tag:yaml.org,2002:map", typeof(Dictionary<object, object>) },
                 { "tag:yaml.org,2002:bool", typeof(bool) },
@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 { "tag:yaml.org,2002:timestamp", typeof(DateTime) },
             };
 
-        private readonly Dictionary<string, Type> _tagMappings;
+        private readonly Dictionary<TagName, Type> _tagMappings;
         private readonly List<IYamlTypeConverter> _converters;
         private readonly TypeDescriptorProxy _typeDescriptor =
             new TypeDescriptorProxy();
@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 new EnumerableNodeDeserializer(),
                 new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
             };
-            _tagMappings = new Dictionary<string, Type>(PredefinedTagMappings);
+            _tagMappings = new Dictionary<TagName, Type>(PredefinedTagMappings);
             TypeResolvers = new List<INodeTypeResolver>
             {
                 new TagNodeTypeResolver(_tagMappings),
@@ -219,7 +219,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 _innerDeserializer = innerDeserializer ?? throw new ArgumentNullException("innerDeserializer");
             }
 
-            private sealed class AliasState : Dictionary<string, ValuePromise>, IPostDeserializationCallback
+            private sealed class AliasState : Dictionary<AnchorName, ValuePromise>, IPostDeserializationCallback
             {
                 public void OnDeserialization()
                 {
@@ -295,10 +295,10 @@ namespace Microsoft.DocAsCode.YamlSerialization
                     return valuePromise.HasValue ? valuePromise.Value : valuePromise;
                 }
 
-                string anchor = null;
+                AnchorName anchor = null;
 
                 var nodeEvent = reader.Peek<NodeEvent>();
-                if (nodeEvent != null && !string.IsNullOrEmpty(nodeEvent.Anchor))
+                if (nodeEvent != null && !nodeEvent.Anchor.IsEmpty)
                 {
                     anchor = nodeEvent.Anchor;
                 }

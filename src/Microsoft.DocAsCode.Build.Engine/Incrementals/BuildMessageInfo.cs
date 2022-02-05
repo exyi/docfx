@@ -149,6 +149,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             public string Code { get; set; }
 
             public string CorrelationId { get; set; }
+            public Exception Exception { get; set; }
         }
     }
 }

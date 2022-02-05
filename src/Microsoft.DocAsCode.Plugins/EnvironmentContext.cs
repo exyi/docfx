@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Get or set current file abstract layer.
         /// </summary>
-        public static IFileAbstractLayer FileAbstractLayer => new RootedFileAbstractLayer(FileAbstractLayerImpl ?? new DefaultFileAbstractLayer());
+        public static IFileAbstractLayer FileAbstractLayer => FileAbstractLayerImpl ?? new DefaultFileAbstractLayer();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static IFileAbstractLayer FileAbstractLayerImpl { get; set; }

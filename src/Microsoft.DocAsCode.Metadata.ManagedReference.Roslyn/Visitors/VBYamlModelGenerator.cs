@@ -1352,7 +1352,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return SyntaxFactory.GetTypeExpression(
                     GetTypeSyntax((ITypeSymbol)value));
             }
-            Debug.Fail("Unknown default value!");
+            // Debug.Fail("Unknown default value!");
             return null;
         }
 

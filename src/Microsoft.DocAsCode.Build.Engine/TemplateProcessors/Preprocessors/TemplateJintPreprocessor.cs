@@ -1,15 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Newtonsoft.Json.Linq;
+
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-
-    using Jint;
+	using Esprima;
+	using Jint;
     using Jint.Native;
     using Jint.Native.Object;
-    using Jint.Parser;
     using Microsoft.DocAsCode.Common;
 
     public class TemplateJintPreprocessor : ITemplatePreprocessor
@@ -150,7 +151,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         cachedEngine = CreateEngine(engine, RequireFuncVariableName);
                         engineCache[s] = cachedEngine;
-                        cachedEngine.Execute(script, new ParserOptions { Source = s });
+                        cachedEngine.Execute(script, new ParserOptions(s));
                     }
 
                     return cachedEngine.GetValue(ExportsVariableName);
@@ -207,11 +208,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return null;
             }
-            if (func.Is<ICallable>())
+            if (func is ICallable)
             {
                 return s =>
                 {
-                    var model = JintProcessorHelper.ConvertObjectToJsValue(s);
+                    var model = JsValue.FromObject(exports.Engine, s);
                     return func.Invoke(model).ToObject();
                 };
             }

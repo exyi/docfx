@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             _compilation = compilation ?? throw new ArgumentNullException(nameof(compilation));
             _assembly = assembly ?? compilation.Assembly;
-        }
+        } 
 
         public MetadataItem Extract(ExtractMetadataOptions options)
         {
@@ -31,11 +31,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             SymbolVisitorAdapter visitor;
             if (_compilation.Language == "Visual Basic")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, _compilation, options);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator(), SyntaxLanguage.VB, _compilation, options);
             }
             else if (_compilation.Language == "C#")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, _compilation, options);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator(), SyntaxLanguage.CSharp, _compilation, options);
             }
             else
             {

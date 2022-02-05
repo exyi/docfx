@@ -11,8 +11,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+	using Microsoft.DocAsCode.Plugins;
 
-    public static class MergeCommentsHelper
+	public static class MergeCommentsHelper
     {
         public static void MergeComments(ExtractMetadataOptions options, MetadataItem item, IEnumerable<string> commentFiles)
         {
@@ -189,7 +190,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             Logger.LogInfo($"Loading developer comments from file: {file}");
             return from reader in
-                       new Func<XmlReader>(() => XmlReader.Create(file))
+                       new Func<XmlReader>(() => XmlReader.Create(EnvironmentContext.FileAbstractLayer.OpenRead(file)))
                        .EmptyIfThrow()
                        .ProtectResource()
                    where reader.ReadToFollowing("members")

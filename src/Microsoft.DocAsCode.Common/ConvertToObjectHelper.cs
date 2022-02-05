@@ -32,8 +32,15 @@ namespace Microsoft.DocAsCode.Common
             }
             if (raw is JObject jObject)
             {
-                return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
+                var r = new Dictionary<string, object>();
+                foreach (var item in jObject)
+                {
+                    r.Add(item.Key, ConvertJObjectToObject(item.Value));
+                }
+                return r;
             }
+            if (raw is JToken jtoken)
+                return jtoken.ToObject<object>();
             return raw;
         }
 
@@ -42,11 +49,11 @@ namespace Microsoft.DocAsCode.Common
             return ConvertJObjectToObject(ConvertStrongTypeToJObject(raw));
         }
 
-        public static object ConvertStrongTypeToJObject(object raw)
+        public static JToken ConvertStrongTypeToJObject(object raw)
         {
-            if (raw is JToken)
+            if (raw is JToken jt)
             {
-                return raw;
+                return jt;
             }
 
             return JToken.FromObject(raw, JsonUtility.DefaultSerializer.Value);

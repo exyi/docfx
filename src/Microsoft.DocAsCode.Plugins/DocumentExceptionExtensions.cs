@@ -95,6 +95,13 @@
             {
                 throw new ArgumentOutOfRangeException(nameof(parallelism));
             }
+            // don't clutter stack traces in debug runs
+            if (parallelism == 1)
+            {
+                foreach (var s in elements)
+                    action(s);
+                return;
+            }
             DocumentException firstException = null;
             Parallel.ForEach(
                 elements,

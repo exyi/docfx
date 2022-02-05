@@ -11,8 +11,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
+	using Microsoft.DocAsCode.Plugins;
 
-    public abstract class CacheBase
+	public abstract class CacheBase
     {
         private static readonly int CleanupIntervalInDays = 5; // 5 days and clean up
         private static readonly int CleanupMaxCount = 100; // 100 items before clean up
@@ -163,7 +164,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         class FileCollectionStream : Stream
         {
             private IEnumerator<string> _fileEnumerator;
-            private FileStream _stream;
+            private Stream _stream;
 
             public FileCollectionStream(IEnumerable<string> files)
             {
@@ -245,7 +246,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 base.Dispose(disposing);
             }
 
-            private bool TryGetNextFileStream(out FileStream stream)
+            private bool TryGetNextFileStream(out Stream stream)
             {
                 var next = _fileEnumerator.MoveNext();
                 if (!next)
@@ -254,7 +255,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return false;
                 }
 
-                stream = new FileStream(_fileEnumerator.Current, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                stream = EnvironmentContext.FileAbstractLayer.OpenRead(_fileEnumerator.Current);
                 return true;
             }
         }

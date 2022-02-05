@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.Common
             Log(level, message, phase, file, line, null);
         }
 
-        public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null)
+        public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null, Exception exception = null)
         {
             Log(new LogItem
             {
@@ -144,6 +144,7 @@ namespace Microsoft.DocAsCode.Common
                 LogLevel = level,
                 Message = message,
                 Code = code,
+                Exception = exception,
 #if NetCore
                 Phase = phase,
 #else
@@ -228,9 +229,9 @@ namespace Microsoft.DocAsCode.Common
             LogError(message, phase, file, line, null);
         }
 
-        public static void LogError(string message, string phase = null, string file = null, string line = null, string code = null)
+        public static void LogError(string message, string phase = null, string file = null, string line = null, string code = null, Exception exception = null)
         {
-            Log(LogLevel.Error, message, phase, file, line, code);
+            Log(LogLevel.Error, message, phase, file, line, code, exception);
         }
 
         public static void Log(object result)
@@ -266,6 +267,7 @@ namespace Microsoft.DocAsCode.Common
             public string Code { get; set; }
 
             public string CorrelationId { get; }
+            public Exception Exception { get; set; }
 
             public LogItem()
             {

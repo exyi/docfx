@@ -3,7 +3,8 @@
 
 namespace Microsoft.DocAsCode.Common
 {
-    using System.IO;
+	using System;
+	using System.IO;
     using System.Text;
     using System.Threading;
 
@@ -18,6 +19,8 @@ namespace Microsoft.DocAsCode.Common
     {
         private static readonly ThreadLocal<YamlSerializer> serializer = new ThreadLocal<YamlSerializer>(() => new YamlSerializer(SerializationOptions.DisableAliases));
         private static readonly ThreadLocal<YamlDeserializer> deserializer = new ThreadLocal<YamlDeserializer>(() => new YamlDeserializer(ignoreUnmatched: true));
+
+        const bool allowJsonMagicSwitch = true;
 
         public static void Serialize(TextWriter writer, object graph)
         {
@@ -50,6 +53,28 @@ namespace Microsoft.DocAsCode.Common
 
         public static T Deserialize<T>(TextReader reader)
         {
+            if (allowJsonMagicSwitch)
+            {
+                // ship whitespace
+                bool isJson = false;
+                while (true) {
+                    var ch = reader.Peek();
+                    if (ch < 0)
+                        throw new Exception("Unexpected end of input");
+
+                    if (char.IsWhiteSpace((char)ch))
+                        reader.Read();
+                    else if ((char)ch == '#')
+                        reader.ReadLine();
+                    else
+                    {
+                        isJson = (char)ch is '{' or '[';
+                        break;
+                    }
+                }
+                if (isJson)
+                    return JsonUtility.Deserialize<T>(reader);
+            }
             return deserializer.Value.Deserialize<T>(reader);
         }
 

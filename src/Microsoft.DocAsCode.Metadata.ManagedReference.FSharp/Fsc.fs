@@ -42,8 +42,8 @@ type FscCommandLineBuilder () =
     override x.ToString() =
         builder.ToString()
 
-    member x.AppendFileNamesIfNotNull(filenames:ITaskItem array, sep:string) =
-        builder.AppendFileNamesIfNotNull(filenames, sep)
+    member x.AppendFileNamesIfNotNull(filenames:ITaskItem [], sep:string) =
+        // builder.AppendFileNamesIfNotNull(filenames, sep)
         // do not update "args", not used
         for item in filenames do
             let tmp = new CommandLineBuilder()

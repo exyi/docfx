@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private static readonly HttpClient _client = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
         private readonly ConcurrentDictionary<string, TocInfo> _tableOfContents = new ConcurrentDictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
-        private readonly Task<IXRefContainerReader> _reader;
+        public Task<IXRefContainerReader> _reader;
         private ImmutableArray<string> _xrefMapUrls { get; }
         private ImmutableArray<string> _xrefServiceUrls { get; }
 
@@ -50,6 +50,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             MaxParallelism = parameters.MaxParallelism;
             MaxHttpParallelism = parameters.MaxHttpParallelism;
 
+            if (parameters.XRefReader != null)
+                _reader = Task.FromResult(parameters.XRefReader);
             if (parameters.XRefMaps.Length > 0)
             {
                 _reader = new XRefCollection(

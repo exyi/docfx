@@ -3,19 +3,25 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using System.Security.Cryptography;
-    using System.Text;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Linq;
+	using System.Reflection;
+	using System.Security.Cryptography;
+	using System.Text;
 
-    using Microsoft.DocAsCode.Common;
+	using Microsoft.DocAsCode.Common;
 
-    [Serializable]
-    public class TemplateManager
-    {
+	public interface ITemplateManager
+	{
+		TemplateProcessor GetTemplateProcessor(DocumentBuildContext context, int maxParallelism);
+        CompositeResourceReader CreateTemplateResource();
+	}
+
+	[Serializable]
+    public class TemplateManager : ITemplateManager
+	{
         private readonly List<string> _templates = new List<string>();
         private readonly List<string> _themes = new List<string>();
         private readonly ResourceFinder _finder;
@@ -31,13 +37,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             return TryExportResourceFiles(_templates, outputDirectory, true, regexFilter);
         }
+		public TemplateProcessor GetTemplateProcessor(DocumentBuildContext context, int maxParallelism)
+		{
+			return new TemplateProcessor(CreateTemplateResource(_templates), context, maxParallelism);
+		}
 
-        public TemplateProcessor GetTemplateProcessor(DocumentBuildContext context, int maxParallelism)
-        {
-            return new TemplateProcessor(CreateTemplateResource(_templates), context, maxParallelism);
-        }
-
-        public string GetTemplatesHash()
+		public string GetTemplatesHash()
         {
             if (_templates == null)
             {

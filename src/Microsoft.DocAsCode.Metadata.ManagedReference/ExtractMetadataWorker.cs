@@ -339,7 +339,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var commentFiles = (from file in assemblyFiles
                                         select Path.ChangeExtension(file, XmlCommentFileExtension) into xmlFile
-                                        where File.Exists(xmlFile)
+                                        where EnvironmentContext.FileAbstractLayer.Exists(xmlFile)
                                         select xmlFile).ToList();
 
                     var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation, assemblyFiles).ToList();

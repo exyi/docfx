@@ -505,31 +505,32 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static void BuildDocumentWithPlugin(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string applicationBaseDirectory, string pluginDirectory, string templateDirectory)
         {
-            AppDomain builderDomain = null;
-            try
-            {
-                var pluginConfig = Path.Combine(pluginDirectory, "docfx.plugins.config");
-                Logger.LogInfo($"Plug-in directory: {pluginDirectory}, configuration file: {pluginConfig}");
+            throw new PlatformNotSupportedException();
+            // AppDomain builderDomain = null;
+            // try
+            // {
+            //     var pluginConfig = Path.Combine(pluginDirectory, "docfx.plugins.config");
+            //     Logger.LogInfo($"Plug-in directory: {pluginDirectory}, configuration file: {pluginConfig}");
 
-                AppDomainSetup setup = new AppDomainSetup
-                {
-                    ApplicationBase = applicationBaseDirectory,
-                    PrivateBinPath = string.Join(";", applicationBaseDirectory, pluginDirectory),
-                    ConfigurationFile = pluginConfig
-                };
+            //     AppDomainSetup setup = new AppDomainSetup
+            //     {
+            //         ApplicationBase = applicationBaseDirectory,
+            //         PrivateBinPath = string.Join(";", applicationBaseDirectory, pluginDirectory),
+            //         ConfigurationFile = pluginConfig
+            //     };
 
-                builderDomain = AppDomain.CreateDomain("document builder domain", null, setup);
-                builderDomain.UnhandledException += (s, e) => { };
-                var wrapper = new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener(), templateDirectory);
-                builderDomain.DoCallBack(wrapper.BuildDocument);
-            }
-            finally
-            {
-                if (builderDomain != null)
-                {
-                    AppDomain.Unload(builderDomain);
-                }
-            }
+            //     builderDomain = AppDomain.CreateDomain("document builder domain", null, setup);
+            //     builderDomain.UnhandledException += (s, e) => { };
+            //     var wrapper = new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener(), templateDirectory);
+            //     builderDomain.DoCallBack(wrapper.BuildDocument);
+            // }
+            // finally
+            // {
+            //     if (builderDomain != null)
+            //     {
+            //         AppDomain.Unload(builderDomain);
+            //     }
+            // }
         }
 
         #endregion

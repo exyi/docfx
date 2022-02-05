@@ -5,3 +5,4 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Microsoft.DocAsCode.Build.Common.Tests")]
 [assembly: InternalsVisibleTo("Microsoft.DocAsCode.Build.Engine.Tests")]
+[assembly: InternalsVisibleTo("nugetdiff.server.App")]

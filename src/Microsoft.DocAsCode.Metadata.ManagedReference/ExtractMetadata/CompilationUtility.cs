@@ -14,8 +14,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
+	using Microsoft.DocAsCode.Plugins;
 
-    internal static class CompilationUtility
+	internal static class CompilationUtility
     {
         private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
         private static readonly Lazy<MetadataReference> SystemMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(EditorBrowsableAttribute).Assembly.Location));
@@ -65,9 +66,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var paths = assemblyPaths.ToList();
                 //TODO: "mscorlib" should be ignored while extracting metadata from .NET Core/.NET Framework
-                paths.Add(typeof(object).Assembly.Location);
                 var assemblies = (from path in paths
-                                  select MetadataReference.CreateFromFile(path)).ToList();
+                                  let f = EnvironmentContext.FileAbstractLayer.OpenRead(path)
+                                  select MetadataReference.CreateFromStream(f, filePath: path)).ToList();
+                assemblies.Add(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
                 var options = new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
                 var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, assemblies, options);
                 return complilation;

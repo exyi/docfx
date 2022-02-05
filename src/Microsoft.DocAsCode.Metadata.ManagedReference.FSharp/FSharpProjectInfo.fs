@@ -130,15 +130,15 @@ module internal FSharpProjectInfo =
         // all F# compiler arguments
         let allFscArgs = 
             match exec getFscArgsBySdk globalArgs with
-            | Choice1Of2 (FscArgs args) -> args
-            | Choice2Of2 err -> handleErr err 
+            | Ok (FscArgs args) -> args
+            | Error err -> handleErr err 
             | _ -> failwith "unexpected result"
 
         // project references
         let projectRefs =
             match exec getP2PRefs globalArgs with
-            | Choice1Of2 (P2PRefs refs) -> refs
-            | Choice2Of2 err -> handleErr err
+            | Ok (P2PRefs refs) -> refs
+            | Error err -> handleErr err
             | _ -> failwith "unexpected result"
 
         // split compiler arguments into sources and options

@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
 
         [IncrementalIgnore]
-        public TemplateManager TemplateManager { get; set; }
+        public ITemplateManager TemplateManager { get; set; }
 
         [IncrementalIgnore]
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
@@ -95,6 +95,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         [IncrementalIgnore]
         public string SchemaLicense { get; set; }
+        [IncrementalIgnore]
+        public IXRefContainerReader XRefReader { get; set; }
 
         public string FALName { get; set; }
 

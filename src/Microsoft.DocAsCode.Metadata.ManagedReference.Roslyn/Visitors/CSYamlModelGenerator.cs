@@ -987,7 +987,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return SyntaxFactory.TypeOfExpression(
                     GetTypeSyntax((ITypeSymbol)value));
             }
-            Debug.Fail("Unknown default value!");
+			Common.Logger.LogWarning($"Unknown default value! type={type}, value={value}");
             return null;
         }
 

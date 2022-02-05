@@ -21,6 +21,15 @@ namespace Microsoft.DocAsCode.YamlSerialization
     using Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies;
     using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
 
+    [Flags]
+    public enum SerializationOptions {
+        None = 0,
+        DefaultToStaticType = 1,
+        DisableAliases = 2,
+        JsonCompatible = 4,
+        EmitDefaults = 8,
+        Roundtrip = 16,
+    }
     public class YamlSerializer
     {
         internal IList<IYamlTypeConverter> Converters { get; set; }
@@ -31,7 +40,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
         public YamlSerializer(SerializationOptions options = SerializationOptions.None, INamingConvention namingConvention = null)
         {
             _options = options;
-            _namingConvention = namingConvention ?? new NullNamingConvention();
+            _namingConvention = namingConvention ?? NullNamingConvention.Instance;
 
             Converters = new List<IYamlTypeConverter>();
             foreach (IYamlTypeConverter yamlTypeConverter in YamlTypeConverters.BuiltInConverters)
@@ -90,7 +99,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
             if (!IsOptionSet(SerializationOptions.DisableAliases))
             {
                 var anchorAssigner = new AnchorAssigner(Converters);
-                traversalStrategy.Traverse<Nothing>(graph, anchorAssigner, null);
+                traversalStrategy.Traverse<Nothing>(graph, anchorAssigner, default);
 
                 emittingVisitor = new AnchorAssigningObjectGraphVisitor(emittingVisitor, eventEmitter, anchorAssigner);
             }
@@ -130,7 +139,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
             }
             else
             {
-                return new TypeAssigningEventEmitter(writer, IsOptionSet(SerializationOptions.Roundtrip), new Dictionary<Type, string>());
+                return new TypeAssigningEventEmitter(writer, IsOptionSet(SerializationOptions.Roundtrip), new Dictionary<Type, TagName>());
             }
         }
 

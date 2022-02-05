@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             message = $"Error transforming model generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\". To get the detailed raw model, please run docfx with debug mode --debug. {e.Message} ";
                         }
 
-                        Logger.LogError(message, code: ErrorCodes.Template.ApplyTemplatePreprocessorError);
+                        Logger.LogError(message, code: ErrorCodes.Template.ApplyTemplatePreprocessorError, exception: e);
                         throw new DocumentException(message, e);
                     }
 
@@ -205,6 +205,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private string GetLinkToPath(string fileName)
         {
+            return null;
             if (EnvironmentContext.FileAbstractLayerImpl == null)
             {
                 return null;
