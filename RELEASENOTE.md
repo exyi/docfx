@@ -1,8 +1,29 @@
-Version Notes (Current Version: v2.59)
+Version Notes (Current Version: v2.59.0)
 =======================================
 
-v2.59(Pre-release)
+v2.59.0
 -----------
+1. Upgrade markdig to 2.26.0. (#7701)
+2. Allow custom markdig extensions. (#3387)
+3. Only show public interfaces in generated syntax. (#3154)
+
+v2.58.9
+-----------
+1. Fix invalid Github release asset. (#7690)
+2. Fix circular dependency issue when install docfx with nuget cli tool. (#7691)
+3. Improve choco error log by printing choco log file content. (#7692)
+
+v2.58.8
+-----------
+1. Fix nuget package file filter of PublishToAzureDevOps() in CI. (#7684)
+
+v2.58.7
+-----------
+1. Fix git auto crlf error in CI by disabling core.autocrlf. (#7682)
+
+v2.58.6
+-----------
+1. Fix vulnerabilities in CI dependent NPM packages by rewriting CI with PowerShell. (#7678)
 
 v2.58.5
 -----------
