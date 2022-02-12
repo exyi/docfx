@@ -43,5 +43,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             return _cache.GetOrAdd(path, p => new ProjectLevelCache(p));
         }
+
+        public static void ClearCache() => _cache.Clear();
     }
 }

@@ -13,8 +13,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+	using Microsoft.DocAsCode.Common;
 
-    public class ReferenceItem
+	public class ReferenceItem
     {
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
@@ -120,13 +121,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         {
                             for (int i = 0; i < sourceParts.Count; i++)
                             {
-                                Debug.Assert(sourceParts[i].Name == targetParts[i].Name);
-                                Debug.Assert(sourceParts[i].DisplayName == targetParts[i].DisplayName);
-                                Debug.Assert(sourceParts[i].DisplayQualifiedNames == targetParts[i].DisplayQualifiedNames);
+                                if (sourceParts[i].Name != targetParts[i].Name)
+                                    Logger.LogWarning($"sourceParts[i].Name != targetParts[i].Name: {sourceParts[i].Name} != {targetParts[i].Name}");
+                                if (sourceParts[i].DisplayName != targetParts[i].DisplayName)
+                                    Logger.LogWarning($"sourceParts[i].DisplayName != targetParts[i].DisplayName: {sourceParts[i].DisplayName} != {targetParts[i].DisplayName}");
+                                if (targetParts[i].DisplayQualifiedNames != sourceParts[i].DisplayQualifiedNames)
+                                    Logger.LogWarning($"targetParts[i].DisplayQualifiedNames != sourceParts[i].DisplayQualifiedNames: {targetParts[i].DisplayQualifiedNames} != {sourceParts[i].DisplayQualifiedNames}");
+
                                 targetParts[i].IsExternalPath &= sourceParts[i].IsExternalPath;
                                 targetParts[i].Href = targetParts[i].Href ?? sourceParts[i].Href;
                             }
                         }
+                        else
+                            Logger.LogWarning($"sourceParts.Count != targetParts.Count: {sourceParts.Count} != {targetParts.Count}");
                     }
                     else
                     {

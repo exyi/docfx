@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
                 Converters =
                 {
                     new StringEnumConverter { CamelCaseText = true },

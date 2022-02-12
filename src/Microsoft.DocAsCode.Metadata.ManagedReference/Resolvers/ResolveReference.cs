@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
@@ -66,7 +67,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 else
                 {
-                    Debug.Fail($"Reference not found: {key}");
+                    throw new Exception($"Reference not found: {key}");
                 }
             }
         }

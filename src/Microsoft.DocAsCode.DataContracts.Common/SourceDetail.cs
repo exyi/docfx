@@ -9,8 +9,9 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Common.Git;
+	using System.ComponentModel;
 
-    [Serializable]
+	[Serializable]
     public class SourceDetail
     {
         [YamlMember(Alias = "remote")]
@@ -41,10 +42,12 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         [YamlMember(Alias = "startLine")]
         [JsonProperty("startLine")]
+        [DefaultValue(0)]
         public int StartLine { get; set; }
 
         [YamlMember(Alias = "endLine")]
         [JsonProperty("endLine")]
+        [DefaultValue(0)]
         public int EndLine { get; set; }
 
         [YamlMember(Alias = "content")]
@@ -56,6 +59,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         /// </summary>
         [YamlMember(Alias = "isExternal")]
         [JsonProperty("isExternal")]
+        [DefaultValue(false)]
         public bool IsExternalPath { get; set; }
     }
 }

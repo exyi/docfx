@@ -34,10 +34,12 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "isEii")]
         [JsonProperty("isEii")]
+        [DefaultValue(false)]
         public bool IsExplicitInterfaceImplementation { get; set; }
 
         [YamlMember(Alias = "isExtensionMethod")]
         [JsonProperty("isExtensionMethod")]
+        [DefaultValue(false)]
         public bool IsExtensionMethod { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.Parent)]

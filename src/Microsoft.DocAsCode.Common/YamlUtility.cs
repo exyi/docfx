@@ -37,7 +37,10 @@ namespace Microsoft.DocAsCode.Common
                     writer.WriteLine(comment.TrimEnd('\r'));
                 }
             }
-            serializer.Value.Serialize(writer, graph);
+            if (allowJsonMagicSwitch)
+                JsonUtility.Serialize(writer, graph);
+            else
+                serializer.Value.Serialize(writer, graph);
         }
 
         public static void Serialize(string path, object graph)

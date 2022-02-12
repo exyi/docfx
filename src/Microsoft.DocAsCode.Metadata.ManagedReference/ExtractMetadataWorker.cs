@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Exclude not supported files from inputs
             var cacheKey = GetCacheKey(_files.SelectMany(s => s.Value));
 
-            Logger.LogInfo("Loading projects...");
+            Logger.LogVerbose($"Loading projects...");
             if (_files.TryGetValue(FileType.Solution, out var sln))
             {
                 var solutions = sln.Select(s => s.NormalizedPath);
@@ -280,7 +280,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            Logger.LogInfo("Generating metadata for each project...");
+            Logger.LogVerbose($"Generating metadata for each project...");
 
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();

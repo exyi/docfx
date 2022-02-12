@@ -945,7 +945,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return result;
             }
-            if (type.TypeKind == TypeKind.Enum)
+            if (type.TypeKind == TypeKind.Enum || type.BaseType is { Name: "Enum", ContainingNamespace.Name: "System" })
             {
                 var namedType = (INamedTypeSymbol)type;
                 var enumType = GetTypeSyntax(namedType);
@@ -987,13 +987,30 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return SyntaxFactory.TypeOfExpression(
                     GetTypeSyntax((ITypeSymbol)value));
             }
-			Common.Logger.LogWarning($"Unknown default value! type={type}, value={value}");
+
+            if (value is int)
+            {
+                return SyntaxFactory.CastExpression(
+                    GetTypeSyntax(type),
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((int)value)));
+            }
+			Common.Logger.LogWarning($"Unknown default value! type={type} [{type.TypeKind}], value={value}");
             return null;
         }
 
         private static IEnumerable<ExpressionSyntax> GetFlagExpressions(IEnumerable<(string Name, object ConstantValue)> flags, object value, INamedTypeSymbol namedType)
         {
-            switch (namedType.EnumUnderlyingType.SpecialType)
+            var defaultType = value is int ? SpecialType.System_Int32 :
+                              value is sbyte ? SpecialType.System_SByte :
+                              value is byte ? SpecialType.System_Byte :
+                              value is short ? SpecialType.System_Int16 :
+                              value is ushort ? SpecialType.System_UInt16 :
+                              value is long ? SpecialType.System_Int64 :
+                              value is ulong ? SpecialType.System_UInt64 :
+                              SpecialType.None;
+            switch (namedType.EnumUnderlyingType?.SpecialType ?? defaultType)
             {
                 case SpecialType.System_SByte:
                     return GetFlagExpressions(flags.Select(p => (p.Name, (sbyte)p.ConstantValue)), (sbyte)value, namedType);

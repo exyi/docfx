@@ -79,6 +79,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (buildInfo != null)
             {
                 var checksum = buildInfo.CheckSum;
+                Logger.LogInfo($"Checksum = {checksum}, files = {string.Join(", ", buildInfo.RelativeOutputFiles)}");
                 try
                 {
                     var resultCorrupted = GetHash(buildInfo.OutputFolder, buildInfo.RelativeOutputFiles) != checksum;
@@ -94,7 +95,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Info, $"Cache for {key} in {_path} is not valid: {e.Message}, rebuild...");
+                    Logger.Log(LogLevel.Info, $"Cache for {key} in {_path} is not valid: {e.Message}, rebuild...", exception: e);
                 }
             }
 
