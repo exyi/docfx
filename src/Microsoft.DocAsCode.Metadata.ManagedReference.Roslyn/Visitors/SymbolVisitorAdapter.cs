@@ -421,11 +421,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public string AddReference(ISymbol symbol)
         {
             var memberType = GetMemberTypeFromSymbol(symbol);
-            if (memberType == MemberType.Default)
-            {
-                Debug.Fail("Unexpected membertype.");
-                throw new InvalidOperationException("Unexpected membertype.");
-            }
+            // if (memberType == MemberType.Default)
+            // {
+            //     Debug.Fail("Unexpected membertype.");
+            //     throw new InvalidOperationException("Unexpected membertype.");
+            // }
             return _generator.AddReference(symbol, _references, this);
         }
 
@@ -602,7 +602,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     // TODO: special handles for errorType: change to System.Object
                     if (type.Kind == SymbolKind.ErrorType)
                     {
-                        inheritance.Add("System.Object");
+                        AddReference(type);
+                        inheritance.Add(type.ToDisplayString());
                         break;
                     }
 
