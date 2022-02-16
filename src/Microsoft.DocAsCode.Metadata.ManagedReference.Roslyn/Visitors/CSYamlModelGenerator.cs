@@ -12,8 +12,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+	using Microsoft.DocAsCode.Common;
+	using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn.Helpers;
 
     public class CSYamlModelGenerator : SimpleYamlModelGenerator
@@ -629,27 +629,34 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, IFilterVisitor filterVisitor, bool inOneLine = false)
         {
-            var attrs = symbol.GetAttributes();
-            if (attrs.Length > 0)
+            try
             {
-                var attrList = (from attr in attrs
-                                where !(attr.AttributeClass is IErrorTypeSymbol)
-                                where attr?.AttributeConstructor != null
-                                where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
-                                select GetAttributeSyntax(attr)).ToList();
-                if (attrList.Count > 0)
+                var attrs = symbol.GetAttributes();
+                if (attrs.Length > 0)
                 {
-                    if (inOneLine)
+                    var attrList = (from attr in attrs
+                                    where !(attr.AttributeClass is IErrorTypeSymbol)
+                                    where attr?.AttributeConstructor != null
+                                    where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
+                                    select GetAttributeSyntax(attr)).ToList();
+                    if (attrList.Count > 0)
                     {
-                        return SyntaxFactory.SingletonList(
-                            SyntaxFactory.AttributeList(
-                                SyntaxFactory.SeparatedList(attrList)));
+                        if (inOneLine)
+                        {
+                            return SyntaxFactory.SingletonList(
+                                SyntaxFactory.AttributeList(
+                                    SyntaxFactory.SeparatedList(attrList)));
+                        }
+                        return SyntaxFactory.List(
+                            from attr in attrList
+                            select SyntaxFactory.AttributeList(
+                                SyntaxFactory.SingletonSeparatedList(attr)));
                     }
-                    return SyntaxFactory.List(
-                        from attr in attrList
-                        select SyntaxFactory.AttributeList(
-                            SyntaxFactory.SingletonSeparatedList(attr)));
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError("Error while getting attributes for symbol {0}", symbol.Name, exception: e);
             }
             return new SyntaxList<AttributeListSyntax>();
         }
@@ -837,7 +844,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (symbol.HasExplicitDefaultValue)
             {
-                return GetDefaultValueClauseCore(symbol.ExplicitDefaultValue, symbol.Type);
+                try
+                {
+                    return GetDefaultValueClauseCore(symbol.ExplicitDefaultValue, symbol.Type);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError($"Error while getting default value of {symbol}", exception: e);
+                }
             }
             return null;
         }
@@ -976,11 +990,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         return expr;
                     }
                 }
-                return SyntaxFactory.CastExpression(
-                    enumType,
-                    GetLiteralExpressionCore(
+                var literal = GetLiteralExpressionCore(
                         value,
-                        namedType.EnumUnderlyingType));
+                        namedType.EnumUnderlyingType ?? namedType) ??
+                        SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal(Convert.ToInt64(value)));
+                return SyntaxFactory.CastExpression(enumType, literal);
             }
             if (value is ITypeSymbol)
             {
@@ -1060,11 +1076,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             results.Reverse();
             if (!EqualityComparer<T>.Default.Equals(value, default))
             {
+                var literal = GetLiteralExpressionCore(
+                        value,
+                        namedType.EnumUnderlyingType ?? namedType);
                 results.Add(SyntaxFactory.CastExpression(
                     enumType,
-                    GetLiteralExpressionCore(
-                        value,
-                        namedType.EnumUnderlyingType)));
+                    literal));
             }
             return results;
 

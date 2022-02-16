@@ -188,7 +188,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static IEnumerable<CommentIdAndReader> EnumerateDeveloperComments(string file)
         {
-            Logger.LogInfo($"Loading developer comments from file: {file}");
+            // Logger.LogInfo($"Loading developer comments from file: {file}");
             return from reader in
                        new Func<XmlReader>(() => XmlReader.Create(EnvironmentContext.FileAbstractLayer.OpenRead(file)))
                        .EmptyIfThrow()
