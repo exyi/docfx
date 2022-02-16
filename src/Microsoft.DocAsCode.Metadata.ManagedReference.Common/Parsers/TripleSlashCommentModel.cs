@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public class TripleSlashCommentModel
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-        private static readonly Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+        private static readonly Regex CommentIdRegex = new Regex(@"^((?<type>N|T|M|P|F|E|Overload):)?(?<id>" + idSelector + ")$", RegexOptions.Compiled);
         private static readonly Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
         private static readonly Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
         private static readonly Regex RegionRegex = new Regex(@"^\s*#region\s*(.*)$");
@@ -548,7 +548,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         if (match.Success)
                         {
                             var id = match.Groups["id"].Value;
-                            var type = match.Groups["type"].Value;
+                            var type = match.Groups.ContainsKey("type") ? match.Groups["type"].Value : "Unknown";
 
                             if (type == "Overload")
                             {
@@ -586,7 +586,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             }
                         }
 
-                        Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in triple-slash-comments{detailedInfo}, ignored.");
+                        // !: means that the C# compiler also could not resolve the reference, so it's developer's fault and we don't have to pollute our logs with that.
+                        if (!cref.StartsWith("!:"))
+                            Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in triple-slash-comments{detailedInfo}, ignored.");
                     }
                 }
             }
