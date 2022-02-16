@@ -130,11 +130,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // An explicit <inheritdoc/> (i.e. cref) overrides the default behavior
             if (!string.IsNullOrEmpty(dest.InheritDoc) && context.Members.TryGetValue(dest.InheritDoc, out src))
             {
-                srcName = dest.InheritDoc;
+                if (dest.CommentId == dest.InheritDoc)
+                {
+                    Logger.LogWarning($"{dest.CommentId} has an explicit <inheritdoc/> tag, but the comment id is the same as the member name.");
+                }
+                else
+                {
+                    srcName = dest.InheritDoc;
+                }
             }
 
             if (string.IsNullOrEmpty(srcName))
                 return;
+            if (srcName == dest.CommentId)
+            {
+                Logger.LogWarning($"{dest.CommentId} has <inheritdoc/> tag, but the found base member has the same as the member name.");
+                return;
+            }
 
             if (src == null && !context.Members.TryGetValue(srcName, out src))
             {
@@ -155,6 +167,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void Copy(MetadataItem dest, MetadataItem src, ResolverContext context)
         {
+            if (dest == src)
+                return;
             if (src.InheritDoc != null)
             {
                 InheritDoc(src, context);
