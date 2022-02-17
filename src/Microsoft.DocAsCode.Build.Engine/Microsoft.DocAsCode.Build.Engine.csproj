@@ -13,6 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+
     <PackageReference Include="DotLiquid" Version="2.0.145" />
     <PackageReference Include="Jint" Version="3.0.0-beta-2035" />
     <PackageReference Include="Nustache" Version="1.15.3.5" />
