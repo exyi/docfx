@@ -430,9 +430,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private string GetMethodSyntax(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             ExplicitInterfaceSpecifierSyntax eii = null;
-            if (symbol.ExplicitInterfaceImplementations.Length > 0)
+            if (GetEiiContainerTypeName(symbol, filterVisitor) is {} typeName)
             {
-                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol, filterVisitor)));
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(typeName));
             }
             return SyntaxFactory.MethodDeclaration(
                 GetAttributes(symbol, filterVisitor),
@@ -556,9 +556,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private string GetEventSyntax(IEventSymbol symbol, IFilterVisitor filterVisitor)
         {
             ExplicitInterfaceSpecifierSyntax eii = null;
-            if (symbol.ExplicitInterfaceImplementations.Length > 0)
+            if (GetEiiContainerTypeName(symbol, filterVisitor) is {} typeName)
             {
-                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol, filterVisitor)));
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(typeName));
             }
             return RemoveBraces(
                 SyntaxFactory.EventDeclaration(
@@ -577,9 +577,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             string result;
             ExplicitInterfaceSpecifierSyntax eii = null;
-            if (symbol.ExplicitInterfaceImplementations.Length > 0)
+            if (GetEiiContainerTypeName(symbol, filterVisitor) is {} typeName)
             {
-                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol, filterVisitor)));
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(typeName));
             }
             if (symbol.IsIndexer)
             {
