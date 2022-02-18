@@ -1078,7 +1078,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var literal = GetLiteralExpressionCore(
                         value,
-                        namedType.EnumUnderlyingType ?? namedType);
+                        namedType.EnumUnderlyingType ?? namedType) ??
+                        
+                        SyntaxFactory.LiteralExpression(
+                            SyntaxKind.NumericLiteralExpression,
+                            SyntaxFactory.Literal(Convert.ToInt64(value)));
+
                 results.Add(SyntaxFactory.CastExpression(
                     enumType,
                     literal));
