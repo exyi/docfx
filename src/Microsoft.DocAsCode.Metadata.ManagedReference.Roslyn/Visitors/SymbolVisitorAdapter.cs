@@ -220,10 +220,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             item.Items = new List<MetadataItem>();
             foreach (var member in symbol.GetMembers().Where(s => !(s is INamedTypeSymbol)))
             {
-                var memberItem = member.Accept(this);
-                if (memberItem != null)
+                try
                 {
-                    item.Items.Add(memberItem);
+                    var memberItem = member.Accept(this);
+                    if (memberItem != null)
+                    {
+                        item.Items.Add(memberItem);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Unable to generate member {member.Name} in {symbol.Name}.", exception: ex);
                 }
             }
 
