@@ -169,7 +169,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             var syntaxNode = syntaxRef.GetSyntax();
-            Debug.Assert(syntaxNode != null);
+            if (syntaxNode == null)
+                Logger.LogWarning("Invalid syntax node for {0}", symbol.ToDisplayString());
             if (syntaxNode != null)
             {
                 var source = new SourceDetail
@@ -212,7 +213,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public static bool InGlobalNamespace(ISymbol symbol)
         {
-            Debug.Assert(symbol != null);
+            if (symbol == null)
+            {
+                Logger.LogWarning("InGlobalNamespace: symbol is null");
+                return false;
+            }
 
             return symbol.ContainingNamespace == null || symbol.ContainingNamespace.IsGlobalNamespace;
         }

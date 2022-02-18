@@ -10,7 +10,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Reflection.Metadata;
     using System.Text;
     using Microsoft.CodeAnalysis;
-    using NuGet.Protocol.Plugins;
+	using Microsoft.DocAsCode.Common;
+	using NuGet.Protocol.Plugins;
 
     public abstract class NameVisitorCreator
     {
@@ -301,7 +302,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        Debug.Fail("Unexpected conversion name.");
+                        Logger.LogWarning($"Unexpected conversion name: {symbol.Name}");
                         Append(symbol.Name);
                     }
                     break;
@@ -312,7 +313,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        Debug.Fail("Operator should start with 'op_'");
+                        Logger.LogWarning($"Operator should start with 'op_': {symbol}");
                         Append(symbol.Name);
                     }
                     break;
@@ -834,7 +835,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        Debug.Fail("Unexpected conversion name.");
+                        Logger.LogWarning($"Unexpected conversion name: {symbol}");
                         Append(symbol.Name);
                     }
                     break;
@@ -845,7 +846,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        Debug.Fail("Operator should start with 'op_'");
+                        Logger.LogWarning($"Unexpected user defined operatorOperator should start with 'op_': {symbol}");
                         Append(symbol.Name);
                     }
                     break;

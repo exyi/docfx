@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Linq;
 
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     public static class YamlViewModelExtensions
@@ -116,7 +117,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (item == null)
             {
-                Debug.Fail("item is null.");
+                Logger.LogWarning("ToTocViewModel: item is null.");
                 return null;
             }
             switch (item.Type)
@@ -407,7 +408,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (list.Count == 0)
             {
-                Debug.Fail("Unexpected reference.");
+                Logger.LogWarning($"Unexpected reference: {reference}");
                 return null;
             }
             if (list.Count == 1)

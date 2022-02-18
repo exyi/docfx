@@ -711,7 +711,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return symbol.ExplicitInterfaceImplementations[i].Name;
                 }
             }
-            Debug.Fail("Should not be here!");
+            Logger.LogWarning($"GetMemberName: Should not be here: {symbol}");
             return symbol.Name;
         }
 
@@ -729,7 +729,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return symbol.ExplicitInterfaceImplementations[i].Name;
                 }
             }
-            Debug.Fail("Should not be here!");
+            Logger.LogWarning($"GetMemberName: Should not be here: {symbol}");
             return symbol.Name;
         }
 
@@ -747,7 +747,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return symbol.ExplicitInterfaceImplementations[i].Name;
                 }
             }
-            Debug.Fail("Should not be here!");
+            Logger.LogWarning($"GetMemberName: Should not be here: {symbol}");
             return symbol.Name;
         }
 
@@ -764,7 +764,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter).GetName(symbol.ExplicitInterfaceImplementations[i].ContainingType);
                 }
             }
-            Debug.Fail("Should not be here!");
+            Logger.LogWarning($"GetEiiContainerTypeName: Should not be here: {symbol}");
             return null;
         }
 
@@ -781,7 +781,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter).GetName(symbol.ExplicitInterfaceImplementations[i].ContainingType);
                 }
             }
-            Debug.Fail("Should not be here!");
+            Logger.LogWarning($"GetEiiContainerTypeName: Should not be here: {symbol}");
             return null;
         }
 
@@ -798,7 +798,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter).GetName(symbol.ExplicitInterfaceImplementations[i].ContainingType);
                 }
             }
-            Debug.Fail("Should not be here!");
+            Logger.LogWarning($"GetEiiContainerTypeName: Should not be here: {symbol}");
             return null;
         }
 

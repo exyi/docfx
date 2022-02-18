@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else
             {
-                Debug.Assert(false, "Language not supported: " + _compilation.Language);
+                // Debug.Assert(false, "Language not supported: " + _compilation.Language);
                 Logger.Log(LogLevel.Error, "Language not supported: " + _compilation.Language);
                 return null;
             }

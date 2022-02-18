@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 else
                 {
-                    throw new Exception($"Reference not found: {key}");
+                    Logger.LogWarning($"Reference not found: {key}");
                 }
             }
         }

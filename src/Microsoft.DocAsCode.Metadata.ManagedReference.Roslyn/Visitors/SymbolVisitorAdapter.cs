@@ -11,7 +11,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+	using Microsoft.DocAsCode.Common;
+	using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
 
     public class SymbolVisitorAdapter
@@ -312,7 +313,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var id = AddSpecReference(symbol.Type, typeGenericParameters);
             result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
-            Debug.Assert(result.Syntax.Return.Type != null);
+            if(result.Syntax.Return.Type == null)
+                Logger.LogWarning($"result.Syntax.Return.Type is null, Cannot find type for {symbol} in {symbol.ContainingType.ToDisplayString()}");
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
@@ -346,7 +348,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var id = AddSpecReference(symbol.Type, typeGenericParameters);
             result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
-            Debug.Assert(result.Syntax.Return.Type != null);
+            if (result.Syntax.Return.Type == null)
+                Logger.LogWarning($"result.Syntax.Return.Type is null, Cannot find type for {symbol} in {symbol.ContainingType.ToDisplayString()}");
 
             AddMemberImplements(symbol, result, typeGenericParameters);
 
@@ -386,14 +389,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters);
                     var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
-                    Debug.Assert(param.Type != null);
+                    if (param.Type == null)
+                        Logger.LogWarning($"param.Type is null, Cannot find type for {p} in {symbol.ContainingType.ToDisplayString()}");
                     result.Syntax.Parameters.Add(param);
                 }
             }
             {
                 var id = AddSpecReference(symbol.Type, typeGenericParameters);
                 result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
-                Debug.Assert(result.Syntax.Return.Type != null);
+                if (result.Syntax.Return.Type == null)
+                    Logger.LogWarning($"result.Syntax.Return.Type is null, Cannot find type for {symbol} in {symbol.ContainingType.ToDisplayString()}");
             }
 
             if (symbol.IsOverride && symbol.OverriddenProperty != null)
@@ -445,7 +450,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case MemberType.Operator:
                     return _generator.AddOverloadReference(symbol, _references, this);
                 default:
-                    Debug.Fail("Unexpected membertype.");
+                    // Debug.Fail("Unexpected membertype.");
                     throw new InvalidOperationException("Unexpected membertype.");
             }
         }
@@ -477,13 +482,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return MemberType.Namespace;
                 case SymbolKind.NamedType:
                     INamedTypeSymbol nameTypeSymbol = symbol as INamedTypeSymbol;
-                    Debug.Assert(nameTypeSymbol != null);
                     if (nameTypeSymbol != null)
                     {
                         return VisitorHelper.GetMemberTypeFromTypeKind(nameTypeSymbol.TypeKind);
                     }
                     else
                     {
+                        Logger.LogWarning($"{symbol} is not a INamedTypeSymbol");
                         return MemberType.Default;
                     }
                 case SymbolKind.Event:
@@ -495,8 +500,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case SymbolKind.Method:
                     {
                         var methodSymbol = symbol as IMethodSymbol;
-                        Debug.Assert(methodSymbol != null);
-                        if (methodSymbol == null) return MemberType.Default;
+                        if (methodSymbol == null)
+                        {
+                            Logger.LogWarning($"{symbol} is not a IMethodSymbol");
+                            return MemberType.Default;
+                        }
                         switch (methodSymbol.MethodKind)
                         {
                             case MethodKind.AnonymousFunction:
@@ -760,7 +768,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters, methodGenericParameters);
                     var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
-                    Debug.Assert(param.Type != null);
+                    if (param.Type == null)
+                        Logger.LogWarning($"{result.Name}.{symbol.Name} has null type for parameter {p.Name}");
                     param.Attributes = GetAttributeInfo(p.GetAttributes());
                     result.Syntax.Parameters.Add(param);
                 }
