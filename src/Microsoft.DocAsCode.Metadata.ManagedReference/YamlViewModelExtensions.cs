@@ -180,7 +180,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static ReferenceViewModel ToReferenceViewModel(KeyValuePair<string, ReferenceItem> model)
         {
-            Debug.Assert(model.Value != null, "Unexpected reference.");
+            _ = model.Value ?? throw new ArgumentException($"Unexpected reference: {model}");
             var result = new ReferenceViewModel
             {
                 Uid = model.Key,

@@ -46,7 +46,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             foreach (var i in member.Items)
             {
-                Debug.Assert(i.Type.IsPageLevel());
                 if (!i.Type.IsPageLevel())
                 {
                     Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
@@ -83,7 +82,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             foreach (var i in member.Items)
             {
-                Debug.Assert(!i.Type.IsPageLevel());
                 if (i.Type.IsPageLevel())
                 {
                     Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
@@ -118,7 +116,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             // does method has members?
-            Debug.Assert(member.Items == null);
             if (member.Items != null)
             {
                 foreach (var i in member.Items)

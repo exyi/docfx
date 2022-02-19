@@ -55,13 +55,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static T? Merge<T>(T? source, T? target) where T : struct
         {
-            Debug.Assert(source == null || target == null || Nullable.Equals(source, target));
+            if (!(source == null || target == null || object.Equals(source, target)))
+                Logger.LogWarning($"Invalid merge: {source} and {target} are not equal.");
             return source ?? target;
         }
 
         private static T Merge<T>(T source, T target) where T : class
         {
-            Debug.Assert(source == null || target == null || object.Equals(source, target));
+            if (!(source == null || target == null || object.Equals(source, target)))
+                Logger.LogWarning($"Invalid merge: {source} and {target} are not equal.");
             return source ?? target;
         }
 
@@ -114,8 +116,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             targetParts.AddRange(sourceParts);
                             continue;
                         }
-
-                        Debug.Assert(sourceParts.Count == targetParts.Count);
 
                         if (sourceParts.Count == targetParts.Count)
                         {

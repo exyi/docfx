@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return;
                     }
-                    Debug.Assert(dest.Parent.Type == MemberType.Class);
+                    // Debug.Assert(dest.Parent.Type == MemberType.Class);
 
                     //try to find the base class
                     if (dest.Parent.Inheritance?.Count == 0)

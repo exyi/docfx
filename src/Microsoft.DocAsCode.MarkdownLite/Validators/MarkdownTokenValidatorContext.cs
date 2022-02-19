@@ -18,7 +18,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             _rewriteEngine = rewriteEngine;
             _file = file;
-            Debug.Assert(_current == null, "Current context should be null.");
+            if (_current != null)
+                throw new Exception("Current context should be null.");
             _current = this;
         }
 

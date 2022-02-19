@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Text.RegularExpressions;
+    using Microsoft.DocAsCode.Common;
 
     internal sealed class SpecIdHelper
     {
@@ -46,8 +47,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 id,
                 match =>
                 {
-                    Debug.Assert(symbol.IsGenericMethod);
-                    Debug.Assert(symbol.TypeParameters.Length > int.Parse(match.Value.Substring(2)));
+                    if (!symbol.IsGenericMethod || symbol.TypeParameters.Length <= int.Parse(match.Value.Substring(2)))
+                    {
+                        Logger.LogWarning($"Invalid generic method parameter: {match}, method: {symbol}");
+                        return "";
+                    }
                     return "{" + symbol.TypeParameters[int.Parse(match.Value.Substring(2))].Name + "}";
                 });
         }
@@ -62,7 +66,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 id,
                 match =>
                 {
-                    Debug.Assert(names.Count > int.Parse(match.Value.Substring(1)));
+                    // Debug.Assert(names.Count > int.Parse(match.Value.Substring(1)));
                     return "{" + names[int.Parse(match.Value.Substring(1))] + "}";
                 });
         }
@@ -77,7 +81,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 id,
                 match =>
                 {
-                    Debug.Assert(names.Count > int.Parse(match.Value.Substring(2)));
+                    // Debug.Assert(names.Count > int.Parse(match.Value.Substring(2)));
                     return "{" + names[int.Parse(match.Value.Substring(2))] + "}";
                 });
         }
