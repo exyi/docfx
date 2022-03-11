@@ -483,14 +483,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             projectMetadata = controller.ExtractMetadata(key);
-            var file = Path.GetRandomFileName();
-            var cacheOutputFolder = projectLevelCache.OutputFolder;
-            var path = Path.Combine(cacheOutputFolder, file);
-            YamlUtility.Serialize(path, projectMetadata);
-            Logger.Log(LogLevel.Verbose, $"Successfully generated metadata {cacheOutputFolder} for {projectMetadata.Name}");
+            // var file = Path.GetRandomFileName();
+            // var cacheOutputFolder = projectLevelCache.OutputFolder;
+            // var path = Path.Combine(cacheOutputFolder, file);
+            // YamlUtility.Serialize(path, projectMetadata);
+            // Logger.Log(LogLevel.Verbose, $"Successfully generated metadata {cacheOutputFolder} for {projectMetadata.Name}");
 
-            // Save to cache
-            projectLevelCache.SaveToCache(key.Key, key.Files, triggeredTime, cacheOutputFolder, new List<string> { file }, key.Options);
+            // // Save to cache
+            // projectLevelCache.SaveToCache(key.Key, key.Files, triggeredTime, cacheOutputFolder, new List<string> { file }, key.Options);
 
             return Tuple.Create(projectMetadata, rebuildProject);
         }
