@@ -7,8 +7,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.IO;
 
     using Microsoft.CodeAnalysis;
-
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+	using Microsoft.DocAsCode.Common;
+	using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     public abstract class YamlModelGenerator
     {
@@ -111,7 +111,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var id = SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
             if (string.IsNullOrEmpty(id))
             {
-                throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingSymbol?.MetadataName}.");
+                Logger.LogWarning($"Fail to parse id for symbol {symbol} in namespace {symbol.ContainingSymbol?.ToString() ?? "<global>"}.");
+                return "Unknown";
             }
             ReferenceItem reference = new ReferenceItem
             {
