@@ -227,7 +227,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (!forceRebuild)
             {
-                var buildInfo = applicationCache.GetValidConfig(cacheKey);
+                var buildInfo = applicationCache?.GetValidConfig(cacheKey);
                 if (buildInfo != null)
                 {
                     IncrementalCheck check = new IncrementalCheck(buildInfo);
@@ -378,7 +378,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
                 Logger.Log(LogLevel.Warning, $"No metadata is generated for {value}.");
-                applicationCache.SaveToCache(cacheKey, null, triggeredTime, outputFolder, null, options);
+                applicationCache?.SaveToCache(cacheKey, null, triggeredTime, outputFolder, null, options);
             }
             else
             {
@@ -390,7 +390,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName).ToList();
                 }
 
-                applicationCache.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, options);
+                applicationCache?.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, options);
             }
         }
 
